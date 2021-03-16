@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: postgres
+  template: #What we're making, every pod follow this template
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      volumes: #tells kubernetes to create this storage system, wherever defined in other object
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: database-persistent-volume-claim
+      containers:
+        - name: postgres
+          image: postgres
+          ports:
+            - containerPort: 5432 #port to get into container
+          volumeMounts:
+            - name: postgres-storage #volume name (line 16) == volumeMount name 
+              mountPath: /var/lib/postgresql/data #default data location for postgres
+              subPath: postgres #folder inside the volume claim, specific to postgres
+          env:
+            - name: POSTGRES_PASSWORD #will use this instead of default automatically
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  
+
+      #find a storage instance with these storage options, static or dynamic
+      #this, currently, will take a slice of my harddrive if the cluster is local
+      #However, on the cloud there are many options. We will need to specify the option
+      #for where we want the storage to be allocated from Kubernetes has info on this.
+      
